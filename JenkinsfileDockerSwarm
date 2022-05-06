@@ -28,7 +28,7 @@ node{
 	
     //Updating Image Tag 
     stage("Update Image tag in compose"){
-        sh "VERSION BUILD_NUMBER docker-compose.yml"
+        sh "sed -i s/VERSION/BUILD_NUMBER docker-compose.yml "
     }
     
     // Remove local image in Jenkins Server
