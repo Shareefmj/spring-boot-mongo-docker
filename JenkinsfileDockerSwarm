@@ -1,4 +1,3 @@
-pipeline{
 node{
 
     //Cloinig the repository and Git checkout
@@ -9,8 +8,7 @@ node{
     //Definig the maven home path and version
     stage(" Maven Clean Package"){
       def mavenHome =  tool name: "Maven-3.6.3", type: "maven"
-      def mavenCMD = "${mavenHome}/bin/mvn"
-      sh "${mavenCMD} clean package"
+      sh "${mavenHome}/bin/mvn clean package"
     } 
     
     //Building Image using docker
@@ -43,4 +41,3 @@ node{
         }
     }
 }//NodeClosing
-}//PipelineClosing
