@@ -14,7 +14,7 @@ services:
       - mongo
     networks:
     - springappnetwork  
-    docker stack deploy:  # This will be considered only in docker swarm.
+    deploy:  # This will be considered only in docker swarm.
       replicas: 2
       update_config:
         parallelism: 1
