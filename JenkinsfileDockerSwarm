@@ -15,7 +15,7 @@ options {
 //start the acutally task now by stages wise
 stages {
 
-    //Cloinig the repository and Git checkout
+ //Cloinig the repository and Git checkout
     stage("Git CheckOut"){
         git url: 'https://github.com/Shareefmj/spring-boot-mongo-docker.git',branch: 'master'
     }
