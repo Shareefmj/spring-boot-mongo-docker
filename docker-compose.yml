@@ -9,12 +9,12 @@ services:
     - MONGO_DB_USERNAME=shareef
     - MONGO_DB_PASSWORD=shareef@123
     ports:
-      - 8080:8080
+      - 9090:8080
     depends_on:
       - mongo
     networks:
     - springappnetwork  
-    deploy:  # This will be considered only in docker swarm.
+    docker stack deploy:  # This will be considered only in docker swarm.
       replicas: 2
       update_config:
         parallelism: 1
