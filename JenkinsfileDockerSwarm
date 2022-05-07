@@ -24,8 +24,8 @@ node{
         sh "docker push shareefmj/spring-boot-mongo:${(BUILD_NUMBER)}"
         }
 	
-    //Updating Image Tag 
-    stage("Update Image tag in compose"){
+    //Updating Image tag in Docker-compose file
+    stage("Updating Image tag"){
         sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml"
     }
     
