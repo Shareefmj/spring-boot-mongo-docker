@@ -1,4 +1,4 @@
-node{
+pipeline{
     
     //here i given Corn-job as poll-SCM instruction when to perfom the task  
 triggers {
@@ -14,6 +14,7 @@ options {
 
 //start the acutally task now by stages wise
 
+stages {
     //Cloinig the repository and Git checkout
     stage("Git CheckOut"){
         git url: 'https://github.com/Shareefmj/spring-boot-mongo-docker.git',branch: 'master'
@@ -54,6 +55,7 @@ options {
         sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
         }
     }
+ }//Stage closing 
     //Here starting the alert Via email notified if any issue raised 
 post {
   always {
@@ -97,4 +99,4 @@ subhan shaik
 ''', subject: 'Build is over', to: 'sksubhani2121@gmail.com'
   }
 }
-}//NodeClosing
+}//pipelineClosing
