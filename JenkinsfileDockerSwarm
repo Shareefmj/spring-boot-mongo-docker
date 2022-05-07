@@ -6,13 +6,13 @@ node{
     }
     
     //Definig the maven home path and version
-    stage(" Maven Clean Package"){
+    stage("Build Maven Package"){
       def mavenHome =  tool name: "Maven-3.6.3", type: "maven"
       sh "${mavenHome}/bin/mvn clean package"
     } 
     
     //Building Image using docker
-    stage("Build Dokcer Image") {
+    stage("Build Docker Image") {
          sh "docker build -t shareefmj/spring-boot-mongo:${(BUILD_NUMBER)} ."
     }
     
@@ -24,8 +24,8 @@ node{
         sh "docker push shareefmj/spring-boot-mongo:${(BUILD_NUMBER)}"
         }
 	
-    //Update Image tag in Docker compose-file
-    stage("Updating Image Tag"){
+    //Updating Image Tag in docker-composeFile
+    stage("Updating Image tag"){
         sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml "
     }
     
