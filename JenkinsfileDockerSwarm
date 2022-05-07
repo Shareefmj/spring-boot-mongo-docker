@@ -13,7 +13,7 @@ node{
     
     //Building Image using docker
     stage("Build Dokcer Image") {
-         sh "docker build -t shareefmj/spring-boot-mongo:${(BUILD_NUMBER)} ."
+        sh "docker build -t shareefmj/spring-boot-mongo:${(BUILD_NUMBER)} ."
     }
     
     //Pushing that Build Image to Docker-Hub
@@ -26,7 +26,7 @@ node{
 	
     //Updating Image Tag 
     stage("Update Image tag in compose"){
-        sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml "
+        sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml"
     }
     
     // Remove local image in Jenkins Server
@@ -35,14 +35,9 @@ node{
     }
     
     stage("Deploy Application to docker_Jenkins_server"){
-        sshagent(['Docker_Jenkins_server']) {
-		    
-             sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
+             sshagent(['070c6c87-7b38-4f27-86ae-61da6e566dd7']) {
+	     sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
              sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
-    
-        }
-    }
+         }
+     }
 }//NodeClosing
-
-
-
