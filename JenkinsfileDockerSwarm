@@ -1,21 +1,7 @@
-pipeline{
-    
-//here i given Corn-job as poll-SCM instruction when to perfom the task  
-triggers {
-  //poll SCM
-  pollSCM '* * * * *'
-}
 
-// by this you can discrad the old builds and retain how many Builds you want  
-options {
-  buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')
-  timestamps()
-}
+node{
 
-//start the acutally task now by stages wise
-stages {
-
- //Cloinig the repository and Git checkout
+    //Cloinig the repository and Git checkout
     stage("Git CheckOut"){
         git url: 'https://github.com/Shareefmj/spring-boot-mongo-docker.git',branch: 'master'
     }
@@ -39,8 +25,8 @@ stages {
         sh "docker push shareefmj/spring-boot-mongo:${(BUILD_NUMBER)}"
         }
 	
-    //Update Image tag in compose
-    stage("Updating Image Tag"){
+    //Updating Image Tag 
+    stage("Update Image tag in compose"){
         sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml "
     }
     
@@ -49,54 +35,12 @@ stages {
         sh "docker rmi -f shareefmj/spring-boot-mongo"
     }
     
-    stage("Deploy Application to docker_Jenkins_server"){
-    sshagent(['070c6c87-7b38-4f27-86ae-61da6e566dd7']) {
-		sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
-        sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
+    //Lets Create container using docker-compose file to docker_Jenkins_server
+    stage("Creating container on docker_Jenkins_server"){
+        sshagent(['070c6c87-7b38-4f27-86ae-61da6e566dd7']) {
+            sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
+            sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
+    
         }
     }
- }//Stage closing 
-    //Here starting the alert Via email notified if any issue raised 
-post {
-  always {
-    // One or more steps need to be included within each condition's block.
-    emailtext body: '''build is over... always
-
-
-Regards
-subhan shaik
-
-''', subject: 'Build is over', to: 'sksubhani2121@gmail.com'
-  }
-  aborted {
-    // One or more steps need to be included within each condition's block.
-    emailext body: '''build is over...aborted
-
-
-Regards
-subhan shaik
-
-''', subject: 'Build is over', to: 'sksubhani2121@gmail.com'
-  }
-  success {
-    // One or more steps need to be included within each condition's block.
-    emailext body: '''build is over... success
-
-
-Regards
-subhan shaik
-
-''', subject: 'Build is over', to: 'sksubhani2121@gmail.com'
-  }
-  failure {
-    // One or more steps need to be included within each condition's block.
-    emailext body: '''build is over...failure
-
-
-Regards
-subhan shaik
-
-''', subject: 'Build is over', to: 'sksubhani2121@gmail.com'
-  }
-}
-}//pipelineClosing
+}//NodeClosing
