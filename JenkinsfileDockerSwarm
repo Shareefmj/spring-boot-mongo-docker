@@ -18,15 +18,15 @@ node{
     
     //Pushing that Build Image to Docker-Hub
     stage("Docker Push"){
-        withCredentials([string(credentialsId: 'Docker_Hub_Pwd', variable: 'Docker_Hub_Pwd')]) {
-          sh "docker login -u shareefmj -p ${Docker_Hub_Pwd}"
+        withCredentials([string(credentialsId: 'fdb215c0-4700-42e1-925b-a2b38e870cf3', variable: 'Docker_Hub_Pwd')]) {
+        sh "docker login -u shareefmj -p ${Docker_Hub_Pwd}" 
         }
-        sh "docker push -t shareefmj/spring-boot-mongo:${(BUILD_NUMBER)}"
+        sh "docker push shareefmj/spring-boot-mongo:${(BUILD_NUMBER)}"
         }
 	
     //Updating Image Tag 
     stage("Update Image tag in compose"){
-        sh "sed -i s/VERSION/BUILD_NUMBER docker-compose.yml "
+        sh "sed -i 's/VERSION/${BUILD_NUMBER}/' docker-compose.yml "
     }
     
     // Remove local image in Jenkins Server
@@ -34,10 +34,15 @@ node{
         sh "docker rmi -f shareefmj/spring-boot-mongo"
     }
     
-    stage("Deploy to docker swarm cluster"){
-        sshagent(['Docker_Swarm_Manager_Dev']) {
-		    sh 'scp -o StrictHostKeyChecking=no  docker-compose.yml ubuntu@172.31.3.24:'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.3.24 docker-compose up -d'
+    stage("Deploy Application to docker_Jenkins_server"){
+        sshagent(['Docker_Jenkins_server']) {
+		    
+             sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
+             sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
+    
         }
     }
 }//NodeClosing
+
+
+
