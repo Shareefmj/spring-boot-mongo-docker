@@ -34,7 +34,8 @@ node{
         sh "docker rmi -f shareefmj/spring-boot-mongo"
     }
     
-    stage("Deploy Application to docker_Jenkins_server"){
+    //Lets Create container using docker-compose file to docker_Jenkins_server
+    stage("Creating container on docker_Jenkins_server"){
              sshagent(['070c6c87-7b38-4f27-86ae-61da6e566dd7']) {
 	     sh "scp -o StrictHostKeyChecking=no  docker-compose.yml  ubuntu@172.31.3.24:"
              sh "ssh -o StrictHostKeyChecking=no  ubuntu@172.31.3.24  docker-compose up -d"
